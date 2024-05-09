@@ -33,13 +33,13 @@ for file in windows_folder_files:
 
 	# print(file.name)
  
-	if file.stat().st_size > 400000:
+	if file.stat().st_size > 300000:
 		# get file name and modification time:
 		file_mod_time = dt.fromtimestamp(file.stat().st_mtime)
-		print(f"{file.name} modified {file_mod_time}")
+		print(f"{file.name} modified {file_mod_time}", end = '')
 
 		if file_mod_time > log['latest_file']:
-			print("new image!")
+			print(" - new image!")
 
 			# update the new_latest_file_time which we'll write to the log at the end:
 			if(file_mod_time > new_latest_file_time):
@@ -49,6 +49,9 @@ for file in windows_folder_files:
 			new_path = today / Path(file.name + '.jpg')
 			shutil.copy2( file, new_path )
 			print("copied!")
+		else:
+			# do the line break
+			print('')
 		
 		# if I wanted to do any sorting based on resolution:
   
