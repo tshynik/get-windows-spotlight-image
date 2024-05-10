@@ -10,7 +10,7 @@ windows_folder = Path.home() / Path("AppData/Local/Packages/Microsoft.Windows.Co
 print(windows_folder)
 
 # where to save the files:
-today = Path('all/today')
+today = Path('today')
 # print(today.resolve())
 
 # get date from latest files, or create the JSON if it doesn't exist yet.
