@@ -5,6 +5,18 @@ import subprocess
 from datetime import datetime as dt
 import json
 
+# via https://stackoverflow.com/questions/13733552:
+import logging
+
+logging.basicConfig(
+	level = logging.INFO,
+	format = "%(asctime)s [%(threadName)-12.12s] [%(levelname)s] %(message)s",
+	handlers = [
+		logging.FileHandler("get_today_img.log"),
+		logging.StreamHandler()
+	]
+)
+
 # where to get the files:
 windows_folder = Path.home() / Path("AppData/Local/Packages/Microsoft.Windows.ContentDeliveryManager_cw5n1h2txyewy/LocalState/Assets")
 print(windows_folder)
@@ -24,7 +36,7 @@ except:
 
 # print(log)
 new_latest_file_time = log['latest_file']
-print(f"Only looking for new files since {new_latest_file_time}")
+logging.info(f"Only looking for new files since {new_latest_file_time}")
 
 # list all the files in the Windows folder:
 windows_folder_files = list(windows_folder.glob('**/*'))
@@ -36,10 +48,10 @@ for file in windows_folder_files:
 	if file.stat().st_size > 300000:
 		# get file name and modification time:
 		file_mod_time = dt.fromtimestamp(file.stat().st_mtime)
-		print(f"{file.name} modified {file_mod_time}", end = '')
+		logging.info(f"{file.name} modified {file_mod_time}")
 
 		if file_mod_time > log['latest_file']:
-			print(" - new image!")
+			logging.info("new image!")
 
 			# update the new_latest_file_time which we'll write to the log at the end:
 			if(file_mod_time > new_latest_file_time):
@@ -48,10 +60,10 @@ for file in windows_folder_files:
 			# copy the image:
 			new_path = today / Path(file.name + '.jpg')
 			shutil.copy2( file, new_path )
-			print("copied!")
+			logging.info("copied!")
 		else:
 			# do the line break
-			print('')
+			logging.info('not a new image')
 		
 		# if I wanted to do any sorting based on resolution:
   
