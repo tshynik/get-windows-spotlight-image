@@ -76,7 +76,7 @@ with open('logs.json', mode = 'w') as log_file:
 logging.info(f"Adjusted datetime cutoff for new files: {new_latest_file_time}")
 	
 # open Windows Explorer at the end to review:
-subprocess.Popen(fr'explorer /select,"{today.resolve()}"')
+# subprocess.Popen(fr'explorer /select,"{today.resolve()}"') ### doesn't work right anyway....
 
 
 ## TODO: checking for duplicates with the same name: MD5 hash? But I think they're already hashed, must be subtle differences. Hm.
