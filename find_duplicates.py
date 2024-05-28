@@ -1,8 +1,18 @@
 import hashlib
 from pathlib import Path
 import json
+import logging
 
-# folder = ''
+logging.basicConfig(
+	level = logging.INFO,
+	format = "%(asctime)s [%(levelname)s] %(message)s",
+	handlers = [
+		logging.FileHandler("find_duplicates.log"),
+		logging.StreamHandler()
+	]
+)
+
+## TODO: read in the previous hash JSON thingy instead of recalculating?
 
 # list all the files in the Windows folder:
 list_of_files = list(Path('').glob('**/*.jpg'))
@@ -21,13 +31,13 @@ for file in list_of_files:
 	# hashes[str(file.name)] = hashlib.md5(open(file,'rb').read()).hexdigest()
 	try:
 		hashes[img_hash].append( f"{file.parent}/{file.name}" )
-		print(f'found existing? {img_hash}')
-		print(hashes[img_hash])
+		logging.info(f'found existing? {img_hash}')
+		logging.info(hashes[img_hash])
 	except:
 		hashes[img_hash] = [ f"{file.parent}/{file.name}" ]
 	
 	if count % 100 == 0:
-		print(f"processed {count}")
+		logging.info(f"processed {count}")
 
 with open(f'all hashes.json', mode = 'w') as output_file:
 	json.dump(hashes, output_file, default=str)

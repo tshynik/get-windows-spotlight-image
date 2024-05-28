@@ -5,13 +5,26 @@ import subprocess
 from datetime import datetime as dt
 import json
 
+# via https://stackoverflow.com/questions/13733552:
+import logging
+
+logging.basicConfig(
+	level = logging.INFO,
+	format = "%(asctime)s [%(levelname)s] %(message)s",
+	handlers = [
+		logging.FileHandler("get_today_img.log"),
+		logging.StreamHandler()
+	]
+)
+
+logging.info(f"NEW RUN")
+
 # where to get the files:
 windows_folder = Path.home() / Path("AppData/Local/Packages/Microsoft.Windows.ContentDeliveryManager_cw5n1h2txyewy/LocalState/Assets")
-print(windows_folder)
+logging.info(f"Looking here: {windows_folder}")
 
 # where to save the files:
 today = Path('today')
-# print(today.resolve())
 
 # get date from latest files, or create the JSON if it doesn't exist yet.
 try:
@@ -22,9 +35,8 @@ try:
 except:
 	log = {'latest_file': dt(1969, 1, 1) }
 
-# print(log)
 new_latest_file_time = log['latest_file']
-print(f"Only looking for new files since {new_latest_file_time}")
+logging.info(f"Only looking for new files since {new_latest_file_time}")
 
 # list all the files in the Windows folder:
 windows_folder_files = list(windows_folder.glob('**/*'))
@@ -36,10 +48,9 @@ for file in windows_folder_files:
 	if file.stat().st_size > 300000:
 		# get file name and modification time:
 		file_mod_time = dt.fromtimestamp(file.stat().st_mtime)
-		print(f"{file.name} modified {file_mod_time}", end = '')
 
 		if file_mod_time > log['latest_file']:
-			print(" - new image!")
+			logging.info(f"NEW - {file.name} modified {file_mod_time}")
 
 			# update the new_latest_file_time which we'll write to the log at the end:
 			if(file_mod_time > new_latest_file_time):
@@ -48,10 +59,9 @@ for file in windows_folder_files:
 			# copy the image:
 			new_path = today / Path(file.name + '.jpg')
 			shutil.copy2( file, new_path )
-			print("copied!")
+			logging.info("copied!")
 		else:
-			# do the line break
-			print('')
+			logging.info(f"OLD - {file.name} modified {file_mod_time}")
 		
 		# if I wanted to do any sorting based on resolution:
   
@@ -62,10 +72,11 @@ for file in windows_folder_files:
 
 log = {'latest_file': new_latest_file_time }
 with open('logs.json', mode = 'w') as log_file:
-    json.dump(log,log_file, default=str)
-
+    json.dump(log,log_file, default = str)
+logging.info(f"Adjusted datetime cutoff for new files: {new_latest_file_time}")
+	
 # open Windows Explorer at the end to review:
-subprocess.Popen(fr'explorer /select,"{today.resolve()}"')
+# subprocess.Popen(fr'explorer /select,"{today.resolve()}"') ### doesn't work right anyway....
 
 
 ## TODO: checking for duplicates with the same name: MD5 hash? But I think they're already hashed, must be subtle differences. Hm.
