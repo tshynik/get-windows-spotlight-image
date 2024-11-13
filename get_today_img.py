@@ -21,6 +21,7 @@ logging.info(f"NEW RUN")
 
 # where to get the files:
 windows_folder = Path.home() / Path("AppData/Local/Packages/Microsoft.Windows.ContentDeliveryManager_cw5n1h2txyewy/LocalState/Assets")
+# windows 11 desktop spotlight: Path("AppData\Local\Packages\MicrosoftWindows.Client.CBS_cw5n1h2txyewy\LocalCache\Microsoft\IrisService") - subfolders under that
 logging.info(f"Looking here: {windows_folder}")
 
 # where to save the files:
@@ -58,7 +59,7 @@ for file in windows_folder_files:
 
 			# copy the image:
 			new_path = today / Path(file.name + '.jpg')
-			shutil.copy2( file, new_path )
+			shutil.copy( file, new_path )
 			logging.info("copied!")
 		else:
 			logging.info(f"OLD - {file.name} modified {file_mod_time}")
