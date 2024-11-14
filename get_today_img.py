@@ -20,9 +20,10 @@ logging.basicConfig(
 logging.info(f"NEW RUN")
 
 # where to get the files:
-windows_folder = Path.home() / Path("AppData/Local/Packages/Microsoft.Windows.ContentDeliveryManager_cw5n1h2txyewy/LocalState/Assets")
-# windows 11 desktop spotlight: Path("AppData\Local\Packages\MicrosoftWindows.Client.CBS_cw5n1h2txyewy\LocalCache\Microsoft\IrisService") - subfolders under that
-logging.info(f"Looking here: {windows_folder}")
+folder_login = Path.home() / Path("AppData/Local/Packages/Microsoft.Windows.ContentDeliveryManager_cw5n1h2txyewy/LocalState/Assets")
+folder_desktop = Path.home() / Path("AppData/Local/Packages/MicrosoftWindows.Client.CBS_cw5n1h2txyewy/LocalCache/Microsoft/IrisService")
+# windows 11 desktop spotlight: Path("AppData/Local/Packages/MicrosoftWindows.Client.CBS_cw5n1h2txyewy/LocalCache/Microsoft/IrisService") - subfolders under that
+logging.info(f"Looking here: {folder_login}")
 
 # where to save the files:
 today = Path('today')
@@ -40,9 +41,9 @@ new_latest_file_time = log['latest_file']
 logging.info(f"Only looking for new files since {new_latest_file_time}")
 
 # list all the files in the Windows folder:
-windows_folder_files = list(windows_folder.glob('**/*'))
+spotlight_files_candidates = list(folder_login.glob('**/*')) + list(folder_desktop.glob('**/*'))
 
-for file in windows_folder_files:
+for file in spotlight_files_candidates:
 
 	# print(file.name)
  
