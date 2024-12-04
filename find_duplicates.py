@@ -12,8 +12,6 @@ logging.basicConfig(
 	]
 )
 
-## TODO: read in the previous hash JSON thingy instead of recalculating?
-
 # list all the files in the Windows folder:
 list_of_files = list(Path('').glob('**/*.jpg'))
 
