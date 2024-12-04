@@ -25,25 +25,25 @@ for file in list_of_files:
 	# print(hashlib.md5(open(file,'rb').read()).hexdigest())
 
 	img_hash = hashlib.md5(open(file,'rb').read()).hexdigest()
-	
+
 	# hashes[str(file.name)] = hashlib.md5(open(file,'rb').read()).hexdigest()
 	try:
 		hashes[img_hash].append( f"{file.parent}/{file.name}" )
 		logging.info(f'found existing? {img_hash}')
 		logging.info(hashes[img_hash])
-	except:
+	except Exception:
 		hashes[img_hash] = [ f"{file.parent}/{file.name}" ]
-	
+
 	if count % 100 == 0:
 		logging.info(f"processed {count}")
 
-with open(f'all hashes.json', mode = 'w') as output_file:
+with open('all hashes.json', mode = 'w', encoding = 'utf8') as output_file:
 	json.dump(hashes, output_file, default=str)
 
 dupe_hashes = dict()
-for key in hashes:
-	if len(hashes[key]) > 1:
-		dupe_hashes[key] = hashes[key]
+for img_hash, img_paths in hashes.items():
+	if len(img_paths) > 1:
+		dupe_hashes[img_hash] = img_paths
 
-with open(f'all hashes - duplicates only.json', mode = 'w') as output_file:
+with open('all hashes - duplicates only.json', mode = 'w', encoding = 'utf8') as output_file:
 	json.dump(dupe_hashes, output_file, default=str)
