@@ -1,4 +1,5 @@
-import hashlib
+import dhash
+from PIL import Image
 from pathlib import Path
 # import json
 import logging
@@ -13,17 +14,29 @@ logging.basicConfig(
 )
 
 # list all the files in the Windows folder:
-list_of_images = list(Path('').glob('**/*.jpg'))
+list_of_images = list(Path('test').glob('**/*.jpg'))
 
 logging.info(f"found {len(list_of_images)} to process")
 count = 0
 for image in list_of_images:
 	count += 1
+	
 	# check if it's been renamed to start with the hash:
-	# format: md5_2a91ffe0f5ab40b5a9b8b720ef4dc625_[stem]
-	if image.stem[:4] != "md5_":
-		img_hash = hashlib.md5(open(image,'rb').read()).hexdigest()
-		image.rename(image.with_stem(f"md5_{img_hash}_{image.stem}"))
+	# md5 format:   md5_2a91ffe0f5ab40b5a9b8b720ef4dc625_[stem]
+	# dhash format: dha_c1c4e4a484a0809083fbffcc0040831e_[stem]
+	#   - using dhash.format_hex(row, col)
+	
+	if image.stem[:4] != "dha_":
+		with Image.open(image) as image_stream:
+			row, col = dhash.dhash_row_col(image_stream)
+			img_hash = dhash.format_hex(row, col)
+
+		# overwrite md5_ hash:
+		if image.stem[:4] == "md5_":
+			image.rename(image.with_stem(f"dha_{img_hash}_{image.stem[37:]}"))
+
+		if image.stem[:4] != "md5_":
+			image.rename(image.with_stem(f"dha_{img_hash}_{image.stem}"))
 
 	if count % 25 == 0:
 		logging.info(f"processed {count}")
