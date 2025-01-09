@@ -9,6 +9,8 @@ Grab the windows spotlight image and save it.
 - [x] try another hash algorithm
 	- Tried dhash - doesn't get duplicates next to each other tho.
 	- I think K-means is probably the way to go - get like 3 principal components and then put the top one (or two?) in the filename. So similarity = close to each other in hash.
+	- even better, maybe resize the image similar to how dhash does it first...!
+	- or give in and use the dhash diff to detect duplicates and near-duplicates, as a second step.
 
 ## some other possible hashes
 idk if any are really faster tho.
