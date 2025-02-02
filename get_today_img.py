@@ -31,7 +31,7 @@ folder_desktop = Path.home() / Path("AppData/Local/Packages/MicrosoftWindows.Cli
 logging.info(f"Looking here:\n{folder_login}\n{folder_desktop}")
 
 # where to save the files:
-today = Path('today')
+today = Path.cwd() / Path('today')
 
 # get date from latest files, or create the JSON if it doesn't exist yet.
 try:
@@ -63,7 +63,8 @@ for file in spotlight_files_candidates:
 			new_latest_file_time = max(file_mod_time, new_latest_file_time)
 
 			# copy the image:
-			new_path = today / Path(file.name + '.jpg')
+			new_path = today / Path(file.stem + '.jpg')
+			# print(new_path)
 			shutil.copy( file, new_path )
 			logging.info("copied!")
 		else:
