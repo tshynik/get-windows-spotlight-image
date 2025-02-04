@@ -52,7 +52,7 @@ for file in spotlight_files_candidates:
 
 	# print(file.name)
 
-	if file.stat().st_size > 300000:
+	if file.stat().st_size > 200000:
 		# get file name and modification time:
 		file_mod_time = dt.fromtimestamp(file.stat().st_mtime)
 
