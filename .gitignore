@@ -3,3 +3,5 @@ logs.json
 *.lnk
 *.json
 *.log
+Lib/*
+Scripts/*
