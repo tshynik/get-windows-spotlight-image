@@ -13,6 +13,12 @@ logging.basicConfig(
 	]
 )
 
+def clean_filename(filestem:str) -> str:
+	filestem = filestem.lower()
+	filestem = filestem.replace(', ','-')
+	filestem = filestem.replace(' ','_')
+	return filestem
+
 
 translation_table = str.maketrans(
 	"0123456789abcdef",
@@ -20,7 +26,7 @@ translation_table = str.maketrans(
 	)
 
 # list all the files in the Windows folder:
-list_of_images = list(Path('faves').glob('**/*.jpg'))
+list_of_images = list(Path('today').glob('**/*.jpg'))
 hash_name = 'ds3_'
 
 logging.info(f"found {len(list_of_images)} to process")
@@ -43,11 +49,13 @@ for image in list_of_images:
 			img_hash1 = img_hash.translate(translation_table)
 			# print(img_hash1)
 		# overwrite md5_ hash:
-		if image.stem[:4] == "md5_" or image.stem[:4] == "dha_" or image.stem[:4] == "dhs_" or image.stem[:4] == "ds2_":
-			image.rename(image.with_stem(f"{hash_name}{img_hash1}_{image.stem[35:]}"))
+		if image.stem[:4] in ("md5_","dha_","dhs_","ds2_"):
+			stem = clean_filename(image.stem[34:])
+			image.rename(image.with_stem(f"{hash_name}{img_hash1}_{stem}"))
 			# print( image.with_stem(f"{hash_name}{img_hash1}_{image.stem[35:]}") )
 		else:
-			image.rename(image.with_stem(f"{hash_name}{img_hash1}_{image.stem}"))
+			stem = clean_filename(image.stem)
+			image.rename(image.with_stem(f"{hash_name}{img_hash1}_{stem}"))
 			# print( image.with_stem(f"{hash_name}{img_hash1}_{image.stem}") )
 
 	if count % 25 == 0:
