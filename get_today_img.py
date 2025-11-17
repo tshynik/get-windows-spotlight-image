@@ -87,8 +87,11 @@ for file in spotlight_files_candidates:
 				img_hash1 = img_hash.translate(translation_table)
 			# don't need to check for existing hash in filename because these are new files
 			stem = clean_filename(new_path.stem)
-			new_path.rename(new_path.with_stem(f"{hash_name}{img_hash1}_{stem}"))
-			logging.info(f"renamed to {new_path.stem}")
+			try:
+				new_path.rename(new_path.with_stem(f"{hash_name}{img_hash1}_{stem}"))
+				logging.info(f"renamed to {hash_name}{img_hash1}")
+			except FileExistsError:
+				logging.warning(f"{hash_name}{img_hash1} already exists.")
 		else:
 			logging.info(f"OLD - {file.name[:20]}..., modified {file_mod_time}")
 
